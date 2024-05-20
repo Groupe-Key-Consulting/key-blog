@@ -1,20 +1,26 @@
 {
-  "name": "",
+  "name": "keyconsuling-blog",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0.",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prepare": "husky install"
   },
   "dependencies": {
+    "@astrojs/check": "^0.7.0",
     "@astrojs/mdx": "^3.0.0",
     "@astrojs/rss": "^4.0.6",
     "@astrojs/sitemap": "^3.1.4",
     "astro": "^4.8.6",
-    "@astrojs/check": "^0.7.0",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "git-precommit-checks": "^3.1.0",
+    "husky": "^8.0.0"
   }
 }
