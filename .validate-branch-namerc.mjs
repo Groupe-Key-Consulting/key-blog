@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   pattern: '^(main)$|^(perf|refactor|bump|feat|fix|rel(?:ease)?)/.+$',
   errorMsg:
     '🤨 The branch that you are trying to push does match our conventions, ' +
