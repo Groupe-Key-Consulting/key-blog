@@ -1,6 +1,6 @@
 import eslintPluginAstro from 'eslint-plugin-astro';
-import md from 'eslint-plugin-markdown';
 import jsdoc from 'eslint-plugin-jsdoc';
+import md from 'eslint-plugin-markdown';
 import * as mdx from 'eslint-plugin-mdx';
 
 export default [
@@ -10,7 +10,15 @@ export default [
     plugins: {
       jsdoc,
     },
-    files: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs', '**/*.ts', '**/*.tsx', '**/*.astro'],
+    files: [
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.mjs',
+      '**/*.cjs',
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.astro',
+    ],
     rules: {
       semi: 'error',
       quotes: ['error', 'single'],

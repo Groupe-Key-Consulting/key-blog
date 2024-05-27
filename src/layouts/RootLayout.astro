@@ -1,0 +1,32 @@
+---
+import { useTranslations } from '@/i18n';
+import SectionContainer from '../components/SectionContainer.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BaseHead from '../components/BaseHead.astro';
+
+const t = useTranslations();
+
+type Props = {
+  title: string;
+  description: string;
+};
+---
+
+<!doctype html>
+<html lang={t('siteMetadata.language')} class="scroll-smooth">
+  <BaseHead {...Astro.props} />
+  <body
+    class="bg-black text-black antialiased dark:bg-gray-950 dark:text-white"
+  >
+    <SectionContainer>
+      <div class="flex h-screen flex-col justify-between font-sans">
+        <Header />
+        <main class="mb-auto">
+          <slot />
+        </main>
+        <Footer />
+      </div>
+    </SectionContainer>
+  </body>
+</html>

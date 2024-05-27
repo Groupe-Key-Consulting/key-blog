@@ -1,0 +1,14 @@
+---
+import { languages, ui } from '@/i18n/ui';
+import { switchLang } from '@/i18n';
+---
+
+<ul>
+  {
+    Object.entries(languages).map(([lang, label]) => (
+      <li>
+        <a href={switchLang(Astro.url, lang as keyof typeof ui)}>{label}</a>
+      </li>
+    ))
+  }
+</ul>
