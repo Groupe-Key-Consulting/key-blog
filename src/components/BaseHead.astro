@@ -2,47 +2,121 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '@/styles/global.css';
+import Favicon from '@/assets/favicons/favicon.svg';
+import { getImage } from 'astro:assets';
 
 import { AstroFont } from 'astro-font';
+import { SITE_METADATA } from '../consts.js';
+import { SEO } from 'astro-seo';
+import { getLangFromUrl } from '../i18n';
 
 interface Props {
   title: string;
   description: string;
-  image?: string;
+  ogImage?: string;
+  robots?: string; // default to SITE_METADATA.robots
+  titleTemplate?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+// Optimize favicon and touch icons
+const favicon = await getImage({ src: Favicon, width: 16, height: 16 });
+const appleTouchIcon = await getImage({ src: Favicon, width: 76, height: 76 });
+const favicon32 = await getImage({ src: Favicon, width: 32, height: 32 });
+const favicon16 = await getImage({ src: Favicon, width: 16, height: 16 });
+
+// Optimize open graph image
+const importedOgImage = await import('../assets/oglogo.svg').then(
+  m => m.default,
+);
+const openGraphImage = await getImage({
+  src: importedOgImage,
+  width: 1200,
+  height: 630,
+});
+
+const twitterCreator = SITE_METADATA.twitter;
+
+const language = getLangFromUrl(Astro.url);
+
+const {
+  title,
+  description,
+  ogImage = openGraphImage,
+  robots = SITE_METADATA.robots,
+  titleTemplate,
+} = Astro.props;
 ---
 
-<!-- Global Metadata -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<SEO
+  title={title}
+  {titleTemplate}
+  titleDefault={SITE_METADATA.title}
+  description={description}
+  nofollow={robots.includes('nofollow')}
+  noindex={robots.includes('noindex')}
+  url={Astro.url}
+  charset="UTF-8"
+  author={SITE_METADATA.author}
+  keywords={SITE_METADATA.keywords}
+  canonical={canonicalURL}
+  extend={{
+    meta: [
+      {
+        name: 'theme-color',
+        content: '#fff',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        name: 'theme-color',
+        content: '#000',
+        media: '(prefers-color-scheme: dark)',
+      },
+      { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+    ],
+    link: [
+      { rel: 'icon', type: 'image/svg', href: favicon.src },
+      { rel: 'apple-touch-icon', sizes: '76x76', href: appleTouchIcon.src },
+      { rel: 'icon', type: 'image/svg', sizes: '32x32', href: favicon32.src },
+      { rel: 'icon', type: 'image/svg', sizes: '16x16', href: favicon16.src },
+      { rel: 'mask-icon', href: favicon16.src, color: 'black' },
+      { rel: 'alternate', type: 'application/rss+xml', href: '/rss.xml' },
+    ],
+  }}
+  twitter={{
+    ...((twitterCreator && {
+      card: 'summary_large_image',
+      site: twitterCreator,
+      creator: twitterCreator.replace('https://twitter.com/', '@'),
+      title,
+      description,
+      image: ogImage.src,
+    }) ||
+      {}),
+  }}
+  openGraph={{
+    basic: {
+      type: 'website',
+      url: Astro.url,
+      title,
+      image: ogImage.src,
+    },
+    image: {
+      url: ogImage.src,
+      type: `image/${ogImage.options.format}`,
+      width: ogImage.options.width,
+      height: ogImage.options.height,
+      alt: title,
+    },
+    optional: {
+      locale: language,
+      description,
+    },
+  }}
+/>
+
 <meta name="generator" content={Astro.generator} />
-
-<!-- Canonical URL -->
-<link rel="canonical" href={canonicalURL} />
-
-<!-- Primary Meta Tags -->
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
-
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
 
 <AstroFont
   config={[
